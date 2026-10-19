@@ -1,0 +1,71 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PakkaOrder — Ship only pakka orders</title>
+<meta name="description" content="WhatsApp-first COD confirmation shield for India and COD-first Asia. Kill RTO losses: buyers confirm address and intent in 10 seconds, in their language.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--v:#7c3aed;--c:#22d3ee;--m:#f0abfc;--g:#34d399;--bg:#05060f;--txt:#eef2ff;--mut:#8b93b8}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Space Grotesk',system-ui,sans-serif}
+body{background:var(--bg);color:var(--txt);overflow-x:hidden}
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.aurora i{position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(90px);opacity:.3;animation:fl 16s ease-in-out infinite alternate}
+.aurora i:nth-child(1){background:var(--v);top:-20vmax;left:-15vmax}
+.aurora i:nth-child(2){background:var(--c);bottom:-25vmax;right:-15vmax;animation-delay:-6s}
+.aurora i:nth-child(3){background:var(--m);top:30%;left:40%;width:40vmax;height:40vmax;opacity:.14;animation-delay:-11s}
+@keyframes fl{to{transform:translate(9%,7%) scale(1.18)}}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.logo{font-size:22px;font-weight:700}
+.logo b{background:linear-gradient(90deg,var(--c),var(--v),var(--m));-webkit-background-clip:text;background-clip:text;color:transparent}
+.navlink{color:var(--mut);font-size:14px;text-decoration:none}
+.hero{text-align:center;padding:70px 0 50px}
+.hero h1{font-size:clamp(38px,7vw,64px);line-height:1.05;font-weight:700}
+.hero h1 span{background:linear-gradient(90deg,var(--c),var(--v),var(--m));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mut);font-size:18px;max-width:640px;margin:20px auto 34px;line-height:1.6}
+.cta{display:inline-block;padding:16px 34px;border-radius:99px;background:linear-gradient(135deg,var(--c),var(--v));color:#fff;font-weight:700;text-decoration:none;box-shadow:0 12px 44px rgba(124,58,237,.5);margin:0 6px}
+.cta2{display:inline-block;padding:16px 34px;border-radius:99px;border:1px solid rgba(139,147,184,.35);color:var(--txt);font-weight:600;text-decoration:none;margin:0 6px}
+.langs{margin-top:26px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.langs span{padding:7px 16px;border-radius:99px;background:rgba(20,24,45,.55);border:1px solid rgba(124,58,237,.35);font-size:13px;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:40px 0}
+.glass{background:rgba(16,20,40,.6);backdrop-filter:blur(20px);border:1px solid rgba(124,58,237,.3);border-radius:22px;padding:26px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.k{font-size:34px;font-weight:700;background:linear-gradient(90deg,var(--c),var(--m));-webkit-background-clip:text;background-clip:text;color:transparent}
+.glass p{color:var(--mut);font-size:14px;line-height:1.6;margin-top:8px}
+h2{font-size:30px;text-align:center;margin:60px 0 8px}
+.sub2{text-align:center;color:var(--mut);margin-bottom:26px}
+.step b{color:var(--c)}
+.price .k{font-size:26px}
+.hot{border-color:var(--c);box-shadow:0 0 40px rgba(34,211,238,.25)}
+footer{text-align:center;color:rgba(139,147,184,.5);font-size:12px;padding:50px 0 34px;letter-spacing:1px}
+</style></head><body>
+<div class="aurora"><i></i><i></i><i></i></div>
+<div class="wrap">
+<nav><div class="logo">Pakka<b>Order</b></div><a class="navlink" href="#pricing">Pricing</a></nav>
+<div class="hero">
+<h1>Ship only <span>pakka</span> orders.</h1>
+<p>The WhatsApp-first COD confirmation shield for India and COD-first Asia. Before you ship, your buyer re-confirms address and intent in 10 seconds — in their own language. One tap: "Haan, pakka."</p>
+<a class="cta" href="confirm/?t=demo123abc">Try the live demo</a>
+<a class="cta2" href="#how">How it works</a>
+<div class="langs"><span>हिन्दी</span><span>தமிழ்</span><span>తెలుగు</span><span>বাংলা</span><span>English</span></div>
+</div>
+<div class="grid">
+<div class="glass"><div class="k">25-40%</div><p>of COD orders in India return undelivered (RTO) — silent margin killers.</p></div>
+<div class="glass"><div class="k">Rs 100-250</div><p>logistics cost of every single returned order, plus dead stock aging.</p></div>
+<div class="glass"><div class="k">30-60%</div><p>of Bharat orders are still cash-on-delivery. COD is not going away.</p></div>
+</div>
+<h2 id="how">How it works</h2>
+<p class="sub2">Three steps. Ten seconds. Zero apps for the buyer.</p>
+<div class="grid">
+<div class="glass step"><b>1. Import</b><p>Upload your COD orders via CSV or API. Each order gets an unguessable confirmation link.</p></div>
+<div class="glass step"><b>2. Confirm</b><p>The buyer opens the link, sees address and COD amount in their language, and taps yes or no.</p></div>
+<div class="glass step"><b>3. Ship pakka</b><p>Orders come back scored: confirmed, risky, or fake. You ship only what will be delivered.</p></div>
+</div>
+<h2 id="pricing">Pricing</h2>
+<p class="sub2">Pay per verification. No contracts. ROI from the first avoided RTO.</p>
+<div class="grid">
+<div class="glass price"><div class="k">Free</div><p>20 verifications / month. For Instagram & WhatsApp sellers testing the waters.</p></div>
+<div class="glass price"><div class="k">Rs 99</div><p>100 verifications. Starter pack for growing stores.</p></div>
+<div class="glass price hot"><div class="k">Rs 299</div><p>400 verifications + risk reports. The sweet spot for D2C brands.</p></div>
+<div class="glass price"><div class="k">Rs 1,999/mo</div><p>2,000 verifications + API + multi-store dashboard.</p></div>
+</div>
+<footer>PAKKAORDER · BUILT FOR BHARAT · © 2026</footer>
+</div></body></html>
