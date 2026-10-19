@@ -1,0 +1,83 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PakkaOrder — Confirm</title>
+<style>
+:root{--g:#16a34a;--r:#dc2626;--bg:#0b1020;--card:#141b33;--txt:#eef2ff;--mut:#9aa7c7}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+body{background:var(--bg);color:var(--txt);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.wrap{max-width:420px;width:100%}
+.logo{text-align:center;font-weight:800;font-size:22px;margin-bottom:6px}
+.logo span{color:var(--g)}
+.sub{text-align:center;color:var(--mut);font-size:13px;margin-bottom:16px}
+.langs{display:flex;gap:6px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+.langs button{background:var(--card);border:1px solid #26304f;color:var(--mut);border-radius:99px;padding:6px 12px;font-size:12px;cursor:pointer}
+.langs button.on{border-color:var(--g);color:var(--txt)}
+.card{background:var(--card);border:1px solid #26304f;border-radius:16px;padding:18px;margin-bottom:14px}
+.row{font-size:14px;line-height:1.6;color:var(--mut)}
+.row b{color:var(--txt)}
+.q{font-size:15px;margin:10px 0 8px}
+.addr{display:flex;gap:8px}
+.addr button{flex:1;padding:10px;border-radius:10px;border:1px solid #26304f;background:#0e1428;color:var(--mut);font-size:13px;cursor:pointer}
+.addr button.on{border-color:var(--g);color:var(--txt)}
+.big{width:100%;padding:16px;border:0;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;margin-bottom:10px}
+.yes{background:var(--g);color:#fff}
+.no{background:transparent;border:1px solid var(--r);color:var(--r)}
+.done{text-align:center;padding:30px 10px;font-size:17px;font-weight:700}
+.err{text-align:center;color:var(--r);padding:20px}
+</style></head><body><div class="wrap">
+<div class="logo">Pakka<span>Order</span></div>
+<div class="sub" id="sub"></div>
+<div class="langs" id="langs"></div>
+<div id="main"><div class="err" id="err" style="display:none"></div>
+<div id="body" style="display:none">
+<div class="card">
+  <div class="row"><b id="o_ref"></b></div>
+  <div class="row" id="o_name"></div>
+  <div class="row" id="o_addr"></div>
+  <div class="row" id="o_cod"></div>
+  <div class="q" id="q_addr"></div>
+  <div class="addr"><button id="a_yes"></button><button id="a_no"></button></div>
+</div>
+<button class="big yes" id="b_yes"></button>
+<button class="big no" id="b_no"></button>
+</div></div>
+</div>
+<script>
+const SUPA='https://TU-PROYECTO.supabase.co';
+const ANON='TU-ANON-KEY';
+const T=new URLSearchParams(location.search).get('t');
+const STR={
+hi:{sub:'Order confirm karein — 10 second',q:'Kya yeh pata sahi hai?',ay:'Pata sahi hai',an:'Pata galat hai',yes:'Haan, pakka ✅',no:'Nahi, maine order nahi kiya ❌',dy:'Dhanyavaad! Aapka order pakka ho gaya.',dn:'Dhanyavaad. Humne order cancel kar diya.',cod:'COD raashi',inv:'Link manya nahi hai'},
+ta:{sub:'ஆர்டரை உறுதிப்படுத்தவும் — 10 வினாடி',q:'இந்த முகவரி சரியா?',ay:'முகவரி சரி',an:'முகவரி தவறு',yes:'ஆம், உறுதி ✅',no:'இல்லை, நான் ஆர்டர் செய்யவில்லை ❌',dy:'நன்றி! உங்கள் ஆர்டர் உறுதியானது.',dn:'நன்றி. ஆர்டர் ரத்து செய்யப்பட்டது.',cod:'COD தொகை',inv:'இணைப்பு செல்லுபடியாகாது'},
+te:{sub:'ఆర్డర్‌ను నిర్ధారించండి — 10 సెకన్లు',q:'ఈ చిరునామా సరైనదా?',ay:'చిరునామా సరి',an:'చిరునామా తప్పు',yes:'అవును, పక్కా ✅',no:'కాదు, నేను ఆర్డర్ చేయలేదు ❌',dy:'ధన్యవాదాలు! మీ ఆర్డర్ ఖరారైంది.',dn:'ధన్యవాదాలు. ఆర్డర్ రద్దు చేయబడింది.',cod:'COD మొత్తం',inv:'లింక్ చెల్లదు'},
+bn:{sub:'অর্ডার নিশ্চিত করুন — ১০ সেকেন্ড',q:'এই ঠিকানা কি সঠিক?',ay:'ঠিকানা সঠিক',an:'ঠিকানা ভুল',yes:'হ্যাঁ, পাক্কা ✅',no:'না, আমি অর্ডর করিনি ❌',dy:'ধন্যবাদ! আপনার অর্ডার পাকা হলো।',dn:'ধন্যবাদ। অর্ডার বাতিল করা হয়েছে।',cod:'COD পরিমাণ',inv:'লিংকটি বৈধ নয়'},
+en:{sub:'Confirm your order — 10 seconds',q:'Is this address correct?',ay:'Address is correct',an:'Address is wrong',yes:'Yes, pakka ✅',no:'No, I did not order ❌',dy:'Thank you! Your order is confirmed.',dn:'Thank you. The order was cancelled.',cod:'COD amount',inv:'Link is not valid'}};
+let L=(navigator.language||'en').slice(0,2); if(!STR[L])L='en';
+let addrOk=true, P=null;
+const $=id=>document.getElementById(id);
+function rpc(n,a){return fetch(SUPA+'/rest/v1/rpc/'+n,{method:'POST',headers:{'apikey':ANON,'Authorization':'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>{if(!r.ok)throw new Error('x');return r.json()})}
+function render(){const s=STR[L];
+ $('sub').textContent=s.sub; $('q_addr').textContent=s.q;
+ $('a_yes').textContent=s.ay; $('a_no').textContent=s.an;
+ $('b_yes').textContent=s.yes; $('b_no').textContent=s.no;
+ $('a_yes').classList.toggle('on',addrOk); $('a_no').classList.toggle('on',!addrOk);
+ document.querySelectorAll('.langs button').forEach(b=>b.classList.toggle('on',b.dataset.l===L));
+ if(P){$('o_cod').textContent=s.cod+': Rs '+P.cod}}
+function langs(){$('langs').innerHTML='';Object.keys(STR).forEach(k=>{const b=document.createElement('button');b.dataset.l=k;b.textContent={hi:'हिं',ta:'தமிழ்',te:'తె',bn:'বাং',en:'EN'}[k];b.onclick=()=>{L=k;render()};$('langs').appendChild(b)})}
+function fail(msg){$('err').textContent=msg;$('err').style.display='block';$('body').style.display='none'}
+function done(ok){const s=STR[L];$('main').innerHTML='<div class="card"><div class="done">'+(ok?s.dy:s.dn)+'</div></div>'}
+$('a_yes').onclick=()=>{addrOk=true;render()};
+$('a_no').onclick=()=>{addrOk=false;render()};
+$('b_yes').onclick=()=>rpc('confirm_order',{p_token:T,p_action:'yes',p_address_ok:addrOk,p_lang:L}).then(()=>done(true)).catch(()=>done(true));
+$('b_no').onclick=()=>rpc('confirm_order',{p_token:T,p_action:'no',p_address_ok:addrOk,p_lang:L}).then(()=>done(false)).catch(()=>done(false));
+langs(); render();
+if(!T){fail(STR[L].inv)}else{
+ rpc('touch_order',{p_token:T,p_lang:L}).catch(()=>{});
+ rpc('confirm_preview',{p_token:T}).then(p=>{P=p;
+   $('o_ref').textContent='#'+p.order_ref;
+   $('o_name').textContent=p.name;
+   $('o_addr').textContent=p.address+', '+p.city+' '+p.pincode;
+   $('body').style.display='block'; render();
+ }).catch(()=>fail(STR[L].inv));
+}
+</script></body></html>
