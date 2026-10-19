@@ -1,0 +1,109 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PakkaOrder — Brand Console</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--v:#7c3aed;--c:#22d3ee;--m:#f0abfc;--g:#34d399;--r:#fb7185;--y:#fbbf24;--bg:#05060f;--txt:#eef2ff;--mut:#8b93b8}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Space Grotesk',system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);min-height:100vh;padding:18px;overflow-x:hidden}
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.aurora i{position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(90px);opacity:.28;animation:fl 16s ease-in-out infinite alternate}
+.aurora i:nth-child(1){background:var(--v);top:-20vmax;left:-15vmax}
+.aurora i:nth-child(2){background:var(--c);bottom:-25vmax;right:-15vmax;animation-delay:-6s}
+@keyframes fl{to{transform:translate(9%,7%) scale(1.18)}}
+.wrap{max-width:720px;margin:0 auto}
+.logo{font-size:24px;font-weight:700;text-align:center;margin:10px 0 20px}
+.logo b{background:linear-gradient(90deg,var(--c),var(--v),var(--m));-webkit-background-clip:text;background-clip:text;color:transparent}
+.glass{background:rgba(16,20,40,.6);backdrop-filter:blur(20px);border:1px solid rgba(124,58,237,.3);border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.inp{width:100%;padding:14px;border-radius:14px;border:1px solid rgba(139,147,184,.3);background:rgba(10,13,28,.6);color:var(--txt);margin-bottom:10px;font-size:14px;font-family:inherit}
+textarea.inp{min-height:110px;resize:vertical}
+.btn{width:100%;padding:15px;border:0;border-radius:14px;background:linear-gradient(135deg,var(--c),var(--v));color:#fff;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 10px 34px rgba(124,58,237,.4)}
+.btn:active{transform:scale(.98)}
+.btn2{background:transparent;border:1px solid rgba(139,147,184,.35);color:var(--mut);box-shadow:none}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.cred{font-size:24px;font-weight:700;color:var(--c)}
+.lbl{font-size:12px;color:var(--mut);letter-spacing:1px}
+.rowO{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 4px;border-bottom:1px solid rgba(139,147,184,.14);font-size:13px}
+.rowO small{color:var(--mut);display:block}
+.st{padding:4px 12px;border-radius:99px;font-size:11px;font-weight:700;white-space:nowrap}
+.confirmed{background:rgba(52,211,153,.15);color:var(--g)}
+.risky{background:rgba(251,191,36,.15);color:var(--y)}
+.fake{background:rgba(251,113,133,.15);color:var(--r)}
+.pending,.link_sent{background:rgba(34,211,238,.12);color:var(--c)}
+.cp{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.5);color:var(--txt);border-radius:10px;padding:6px 10px;font-size:11px;cursor:pointer}
+.msg{font-size:13px;color:var(--mut);margin:8px 0;min-height:18px}
+.hide{display:none}
+h3{font-size:15px;margin-bottom:10px}
+</style></head><body>
+<div class="aurora"><i></i><i></i></div>
+<div class="wrap">
+<div class="logo">Pakka<b>Order</b> <span style="font-size:12px;color:var(--mut)">BRAND CONSOLE</span></div>
+
+<div id="auth" class="glass">
+<h3>Sign in</h3>
+<input class="inp" id="em" type="email" placeholder="email">
+<input class="inp" id="pw" type="password" placeholder="password">
+<button class="btn" onclick="login()">Enter</button>
+<button class="btn btn2" style="margin-top:8px" onclick="signup()">Create account</button>
+<div class="msg" id="amsg"></div>
+</div>
+
+<div id="reg" class="glass hide">
+<h3>Register your brand</h3>
+<input class="inp" id="bname" placeholder="Brand name">
+<input class="inp" id="bwa" placeholder="WhatsApp number (+91...)">
+<input class="inp" id="bcity" placeholder="City">
+<button class="btn" onclick="regBrand()">Register (starts pending)</button>
+<div class="msg" id="rmsg"></div>
+</div>
+
+<div id="app" class="hide">
+<div class="glass">
+<div class="top"><div><div class="lbl">CREDITS</div><div class="cred" id="credits">0</div></div>
+<div style="text-align:right"><div class="lbl" id="bname2"></div><div class="lbl" id="bplan"></div></div>
+<button class="cp" onclick="out()">Exit</button></div>
+<div class="msg" id="pend" style="display:none">⏳ Your brand is pending activation by the platform. Imports unlock once active.</div>
+</div>
+<div class="glass">
+<h3>Import COD orders</h3>
+<textarea class="inp" id="csv" placeholder="One per line: ref|name|phone|address|city|pincode|cod&#10;ORD-101|Priya Sharma|+919876543210|42 MG Road|Bengaluru|560001|1499"></textarea>
+<button class="btn" onclick="imp()">Import & generate links</button>
+<div class="msg" id="imsg"></div>
+<div id="toks"></div>
+</div>
+<div class="glass">
+<h3>Orders</h3>
+<div id="ords"></div>
+</div>
+</div>
+</div>
+<script>
+const SUPA='https://fmhndmfihqlqcbawoqbqxj.supabase.co';
+const ANON='PEGA_AQUI_TU_ANON_KEY';
+const BASE=location.origin+location.pathname.replace('/dashboard/','/confirm/');
+let TK='',B=null;
+const $=id=>document.getElementById(id);
+const H=()=>({'apikey':ANON,'Authorization':'Bearer '+(TK||ANON),'Content-Type':'application/json'});
+function rpc(n,a){return fetch(SUPA+'/rest/v1/rpc/'+n,{method:'POST',headers:H(),body:JSON.stringify(a)}).then(r=>{if(!r.ok)return r.text().then(t=>{throw new Error(t)});return r.json()})}
+function rest(p){return fetch(SUPA+'/rest/v1/'+p,{headers:H()}).then(r=>r.json())}
+function signup(){fetch(SUPA+'/auth/v1/signup',{method:'POST',headers:H(),body:JSON.stringify({email:$('em').value,password:$('pw').value})}).then(r=>r.json()).then(d=>{$('amsg').textContent=d.access_token?'Created. Entering...':'Check email confirmation or sign in';if(d.access_token){TK=d.access_token;boot()}else login()}).catch(e=>$('amsg').textContent='Error')}
+function login(){fetch(SUPA+'/auth/v1/token?grant_type=password',{method:'POST',headers:H(),body:JSON.stringify({email:$('em').value,password:$('pw').value})}).then(r=>r.json()).then(d=>{if(!d.access_token){$('amsg').textContent='Wrong credentials';return}TK=d.access_token;boot()}).catch(e=>$('amsg').textContent='Error')}
+function out(){TK='';B=null;$('app').classList.add('hide');$('auth').classList.remove('hide')}
+function boot(){$('auth').classList.add('hide');
+ fetch(SUPA+'/auth/v1/user',{headers:H()}).then(r=>r.json()).then(u=>{
+  return rest('profiles?id=eq.'+u.id+'&select=role,brand_id,brands(*)').then(p=>{
+   if(p&&p[0]&&p[0].brands){B=p[0].brands;showApp()}
+   else{$('reg').classList.remove('hide')}
+  })})}
+function regBrand(){rpc('register_brand',{p_name:$('bname').value,p_whatsapp:$('bwa').value,p_city:$('bcity').value}).then(b=>{B=b;$('reg').classList.add('hide');showApp()}).catch(e=>$('rmsg').textContent='Error: '+e.message)}
+function showApp(){$('app').classList.remove('hide');
+ $('credits').textContent=B.credits;$('bname2').textContent=B.name;$('bplan').textContent=(B.plan||'free').toUpperCase();
+ $('pend').style.display=B.active?'none':'block';loadOrders()}
+function loadOrders(){rest('orders?brand_id=eq.'+B.id+'&order=created_at.desc&select=order_ref,customer_name,status,risk_score,confirm_token,cod_amount').then(rs=>{
+ $('ords').innerHTML=(rs||[]).map(o=>'<div class="rowO"><div><b>'+o.order_ref+'</b> · '+o.customer_name+' · Rs '+o.cod_amount+'<small>risk '+o.risk_score+'</small></div><div style="display:flex;gap:6px;align-items:center"><span class="st '+o.status+'">'+o.status+'</span><button class="cp" onclick="cp(\''+o.confirm_token+'\')">link</button></div></div>').join('')||'<div class="msg">No orders yet.</div>'})}
+function cp(t){navigator.clipboard.writeText(BASE+'?t='+t);event.target.textContent='copied!'}
+function imp(){const lines=$('csv').value.trim().split('\n').filter(x=>x.trim());
+ const arr=lines.map(l=>{const p=l.split('|');return{order_ref:p[0],customer_name:p[1],customer_phone:p[2],customer_address:p[3],customer_city:p[4]||'',customer_pincode:p[5]||'',cod_amount:parseFloat(p[6]||'0')}});
+ rpc('import_orders',{p_orders:arr}).then(rs=>{$('imsg').textContent=rs.length+' orders imported. Credits left: '+(B.credits-rs.length);B.credits=B.credits-rs.length;$('credits').textContent=B.credits;
+  $('toks').innerHTML=rs.map(r=>'<div class="rowO"><div><b>'+r.order_ref+'</b></div><button class="cp" onclick="cp(\''+r.confirm_token+'\')">copy link</button></div>').join('');loadOrders()}).catch(e=>$('imsg').textContent='Error: '+e.message)}
+</script></body></html>
